@@ -24,7 +24,7 @@ const ProductList = () => {
       selectedItemDetail.colour.trim() != "" &&
       pId == selectedItemDetail.pId
     ) {
-      const response = await axiosInstance.post("/buyProducts", {
+      const response = await axiosInstance.post("/placeOrder", {
         ...selectedItemDetail,
       });
       if (response.data.success) {

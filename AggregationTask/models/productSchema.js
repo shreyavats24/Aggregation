@@ -1,4 +1,4 @@
-// task 1 - change value in nested array using $
+// Task 2 - break the nested array in two tables (products , productsDetails)
 const mongoose = require("mongoose");
 // connection with mongoDB
 mongoose
@@ -11,7 +11,7 @@ mongoose
   });
 
 // clothes schema
-const ClothesDetails = new mongoose.Schema({
+const products = new mongoose.Schema({
   productName: {
     type: String,
     required: true,
@@ -23,24 +23,12 @@ const ClothesDetails = new mongoose.Schema({
     default: 100,
   },
   moreDetails: [
-    {
-      size: { type: String },
-      details: [
-        {
-          quantity: {
-            type: Number,
-            default: 0,
-            min: 0,
-          },
-          colour: { type: String },
-        },
-      ],
-    },
+    { type: mongoose.Schema.Types.ObjectId, ref: "productdetails" },
   ],
   productImage: {
     type: String,
   },
 });
 
-const ClothsModel = mongoose.model("ClothesDetails", ClothesDetails);
-module.exports = ClothsModel;
+const productsModel = mongoose.model("products", products);
+module.exports = productsModel;

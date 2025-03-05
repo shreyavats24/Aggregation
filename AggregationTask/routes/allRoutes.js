@@ -9,4 +9,10 @@ router.get("/getproducts",productsController.getproducts);
 // post api to check the available quantity
 router.post('/buyProducts',productsController.buyProducts);
 
+// get data from diff collections
+router.get("/getproductsData",productsController.getProducts);
+
+// place order 
+router.post('/placeOrder',productsController.placeOrder);
+
 module.exports= router;
