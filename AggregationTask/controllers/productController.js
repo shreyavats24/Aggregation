@@ -84,12 +84,16 @@ const placeOrder = async (req, res) => {
     // .populate("moreDetails");
     // console.log("po",dataToUpdate[0]._id);
     const updateQuantity = await productDetails.findOneAndUpdate(
-      { _id: dataToUpdate[0]._id ,"details.colour": colour },
+      { _id: dataToUpdate[0]._id },
       {
-        $inc: { "details.$.quantity": -1 },
+        $inc: { "details.$[elem].quantity": -1 },
       },
-      { new: true }
+      {
+        arrayFilters: [{ "elem.colour": colour, "elem.quantity": { $gt: 0 } }], // Filters for the matched `colour`
+        new: true,
+      }
     );
+
     // ;
     console.log(updateQuantity);
   } catch (err) {
