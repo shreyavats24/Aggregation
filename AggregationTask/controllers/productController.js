@@ -50,7 +50,7 @@ const getproducts = async (req, res) => {
 // get data from 2 collection by populating
 const getProducts = async (req, res) => {
   const products = await productsModel.find({}).populate("moreDetails");
-  console.log("getproductsData", products);
+  // console.log("getproductsData", products);
   res.json({ products });
 };
 
@@ -68,7 +68,7 @@ const placeOrder = async (req, res) => {
   try {
     const dataToUpdate = await productsModel.aggregate([
       { $match: { _id: idToSearch } },
-      { $unwind: "$moreDetails" },
+      // { $unwind: "$moreDetails" },
       {
         $lookup: {
           from: "productdetails",
@@ -83,19 +83,24 @@ const placeOrder = async (req, res) => {
     ]);
     // .populate("moreDetails");
     // console.log("po",dataToUpdate[0]._id);
-    const updateQuantity = await productDetails.findOneAndUpdate(
+    const updateQuantity = await productDetails.updateOne(
       { _id: dataToUpdate[0]._id },
       {
         $inc: { "details.$[elem].quantity": -1 },
       },
       {
-        arrayFilters: [{ "elem.colour": colour, "elem.quantity": { $gt: 0 } }], // Filters for the matched `colour`
+        arrayFilters: [{ "elem.colour": colour, "elem.quantity": { $gt: 0 } }],
         new: true,
       }
     );
 
     // ;
-    console.log(updateQuantity);
+    // console.log(updateQuantity);
+    if (!updateQuantity.matchedCount)
+      return res.json({ message: "Product not found" });
+    else if (updateQuantity.modifiedCount > 0)
+      res.json({ success: true, message: "Product is successfully ordered!" });
+    else res.json({ success: false, message: "Product is outofstock!" });
   } catch (err) {
     console.log("Error Placing order : ", err);
   }
